@@ -2,8 +2,9 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=1200, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AniPack — Abre tus sobres animados</title>
+  <meta name="description" content="AniPack: La experiencia gacha definitiva de personajes animados. Abre sobres, colecciona más de 3,000 personajes de anime y cartoons." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -11,16 +12,27 @@
 </head>
 <body>
 
+  <!-- Background particles -->
+  <canvas id="particle-canvas" aria-hidden="true"></canvas>
   <div class="noise" aria-hidden="true"></div>
+
+  <!-- Mobile nav overlay -->
+  <div id="nav-overlay" class="nav-overlay" aria-hidden="true"></div>
 
   <!-- ░░ HERO ░░ -->
   <header class="hero" role="banner">
     <nav class="nav" role="navigation" aria-label="Navegación principal">
       <div class="logo" aria-label="AniPack logo">Ani<span>Pack</span></div>
+      <!-- Hamburger button -->
+      <button id="hamburger" class="hamburger" aria-label="Abrir menú" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
       <ul class="nav-links">
         <li><a href="#sobre">Sobre</a></li>
         <li><a href="#como-funciona">¿Cómo funciona?</a></li>
         <li><a href="#coleccion">Colección</a></li>
+        <li><a href="#simulador">Simulador</a></li>
+        <li><a href="#gestion">Gestión</a></li>
         <li><a href="#cta" class="btn-nav">Jugar gratis</a></li>
       </ul>
     </nav>
@@ -109,75 +121,134 @@
   <!-- ░░ SOBRE INTERACTIVO ░░ -->
   <section class="envelope-section" id="sobre" aria-label="Experiencia de apertura de sobres">
     <div class="container">
-      <div class="section-label">Experiencia de apertura</div>
-      <h2 class="section-title">El momento que<br/>todos esperan.</h2>
-      <p class="section-sub">Haz clic en el sobre para ver la magia. Cada apertura puede cambiar tu colección para siempre.</p>
+      <div class="section-label reveal">Experiencia de apertura</div>
+      <h2 class="section-title reveal">El momento que<br/>todos esperan.</h2>
+      <p class="section-sub reveal">Haz clic en el sobre para ver la magia. Cada apertura puede cambiar tu colección para siempre.</p>
 
       <div class="envelope-stage">
 
         <div class="envelope-wrap">
-          <input type="checkbox" id="env-toggle" class="env-checkbox" aria-label="Abrir sobre" />
-          <label for="env-toggle" class="envelope">
+          <!-- JS-driven button replaces checkbox -->
+          <button id="envelope-btn" class="envelope-btn" aria-label="Abrir sobre">
             <div class="env-body">
               <div class="env-logo">Ani<span style="color:var(--accent)">Pack</span></div>
               <div class="env-stars" aria-hidden="true">✦ ✦ ✦</div>
               <p class="env-hint">Haz clic para abrir</p>
             </div>
             <div class="env-flap" aria-hidden="true"></div>
-          </label>
+          </button>
 
-          <!-- Cartas que salen del sobre al abrirlo -->
+          <!-- Cartas que salen del sobre al abrirlo — ahora con flip 3D -->
           <div class="spill-cards" aria-live="polite">
+
             <div class="spill-card spill-1">
-              <img src="img/goku.png" alt="Goku"
-                   onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
-              <div class="spill-fallback" style="display:none">⚡</div>
-              <div class="spill-info">
-                <span class="spill-rarity legendary-txt">★ Legendario</span>
-                <span class="spill-name">Goku SSB</span>
+              <div class="card-flip">
+                <div class="card-flip-inner">
+                  <div class="card-flip-front">
+                    <div class="card-back-pattern"></div>
+                    <div class="card-back-logo">Ani<span>Pack</span></div>
+                  </div>
+                  <div class="card-flip-back" style="background:linear-gradient(160deg,#281808,#180c04); border:1.5px solid rgba(246,173,85,.35);">
+                    <img src="img/goku.png" alt="Goku"
+                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+                    <div class="spill-fallback" style="display:none">⚡</div>
+                    <div class="spill-info">
+                      <span class="spill-rarity legendary-txt">★ Legendario</span>
+                      <span class="spill-name">Goku SSB</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
+
             <div class="spill-card spill-2">
-              <img src="img/sailor moon.png" alt="Sailor Moon"
-                   onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
-              <div class="spill-fallback" style="display:none">🌙</div>
-              <div class="spill-info">
-                <span class="spill-rarity mythic-txt">⬡ Mítico</span>
-                <span class="spill-name">Sailor Moon</span>
+              <div class="card-flip">
+                <div class="card-flip-inner">
+                  <div class="card-flip-front">
+                    <div class="card-back-pattern"></div>
+                    <div class="card-back-logo">Ani<span>Pack</span></div>
+                  </div>
+                  <div class="card-flip-back" style="background:linear-gradient(160deg,#0e1828,#080f1a); border:1.5px solid rgba(0,229,200,.3);">
+                    <img src="img/sailor moon.png" alt="Sailor Moon"
+                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+                    <div class="spill-fallback" style="display:none">🌙</div>
+                    <div class="spill-info">
+                      <span class="spill-rarity mythic-txt">⬡ Mítico</span>
+                      <span class="spill-name">Sailor Moon</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
+
             <div class="spill-card spill-3">
-              <img src="img/tanjiro.png" alt="Tanjiro"
-                   onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
-              <div class="spill-fallback" style="display:none">🔥</div>
-              <div class="spill-info">
-                <span class="spill-rarity epic-txt">◆ Épico</span>
-                <span class="spill-name">Tanjiro K.</span>
+              <div class="card-flip">
+                <div class="card-flip-inner">
+                  <div class="card-flip-front">
+                    <div class="card-back-pattern"></div>
+                    <div class="card-back-logo">Ani<span>Pack</span></div>
+                  </div>
+                  <div class="card-flip-back" style="background:linear-gradient(160deg,#1a1030,#100820); border:1.5px solid rgba(183,148,244,.3);">
+                    <img src="img/tanjiro.png" alt="Tanjiro"
+                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+                    <div class="spill-fallback" style="display:none">🔥</div>
+                    <div class="spill-info">
+                      <span class="spill-rarity epic-txt">◆ Épico</span>
+                      <span class="spill-name">Tanjiro K.</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
+
             <div class="spill-card spill-4">
-              <img src="img/naruto.png" alt="Naruto U."
-                   onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
-              <div class="spill-fallback" style="display:none">👁️</div>
-              <div class="spill-info">
-                <span class="spill-rarity rare-txt">● Raro</span>
-                <span class="spill-name">Naruto U.</span>
+              <div class="card-flip">
+                <div class="card-flip-inner">
+                  <div class="card-flip-front">
+                    <div class="card-back-pattern"></div>
+                    <div class="card-back-logo">Ani<span>Pack</span></div>
+                  </div>
+                  <div class="card-flip-back" style="background:linear-gradient(160deg,#0e1828,#080f1a); border:1.5px solid rgba(99,179,237,.3);">
+                    <img src="img/naruto.png" alt="Naruto U."
+                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+                    <div class="spill-fallback" style="display:none">👁️</div>
+                    <div class="spill-info">
+                      <span class="spill-rarity rare-txt">● Raro</span>
+                      <span class="spill-name">Naruto U.</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
+
             <div class="spill-card spill-5">
-              <img src="img/itachi.png" alt="Itachi"
-                   onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
-              <div class="spill-fallback" style="display:none">🌀</div>
-              <div class="spill-info">
-                <span class="spill-rarity uncommon-txt">◐ Infrecuente</span>
-                <span class="spill-name">Itachi U.</span>
+              <div class="card-flip">
+                <div class="card-flip-inner">
+                  <div class="card-flip-front">
+                    <div class="card-back-pattern"></div>
+                    <div class="card-back-logo">Ani<span>Pack</span></div>
+                  </div>
+                  <div class="card-flip-back" style="background:linear-gradient(160deg,#1e1428,#100c1e); border:1.5px solid rgba(183,148,244,.25);">
+                    <img src="img/itachi.png" alt="Itachi"
+                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+                    <div class="spill-fallback" style="display:none">🌀</div>
+                    <div class="spill-info">
+                      <span class="spill-rarity uncommon-txt">◐ Infrecuente</span>
+                      <span class="spill-name">Itachi U.</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
+
           </div>
+
+          <!-- Reset button -->
+          <button id="envelope-reset" class="envelope-reset">↻ Abrir otro sobre</button>
         </div>
 
         <!-- Información del sobre -->
-        <aside class="envelope-desc" aria-label="Detalles del sobre">
+        <aside class="envelope-desc reveal reveal-right" aria-label="Detalles del sobre">
           <div class="pack-type">
             <div class="pack-icon" aria-hidden="true">📦</div>
             <div>
@@ -202,9 +273,9 @@
   <!-- ░░ CÓMO FUNCIONA ░░ -->
   <section class="how" id="como-funciona" aria-label="Cómo funciona AniPack">
     <div class="container">
-      <div class="section-label">Mecánica</div>
-      <h2 class="section-title">Así de simple.<br/>Así de adictivo.</h2>
-      <div class="steps">
+      <div class="section-label reveal">Mecánica</div>
+      <h2 class="section-title reveal">Así de simple.<br/>Así de adictivo.</h2>
+      <div class="steps reveal reveal-stagger">
         <article class="step">
           <div class="step-num" aria-hidden="true">01</div>
           <div class="step-icon" aria-hidden="true">📦</div>
@@ -232,12 +303,12 @@
   <!-- ░░ COLECCIÓN ░░ -->
   <section class="collection" id="coleccion" aria-label="Catálogo de personajes">
     <div class="container">
-      <div class="section-label">Catálogo</div>
-      <h2 class="section-title">Miles de personajes.<br/>Un solo sobre.</h2>
-      <p class="section-sub">Desde los clásicos de los 90s hasta los estrenos de temporada actual.</p>
+      <div class="section-label reveal">Catálogo</div>
+      <h2 class="section-title reveal">Miles de personajes.<br/>Un solo sobre.</h2>
+      <p class="section-sub reveal">Desde los clásicos de los 90s hasta los estrenos de temporada actual.</p>
 
       <!-- Series disponibles -->
-      <div class="series-grid" role="list" aria-label="Series disponibles">
+      <div class="series-grid reveal" role="list" aria-label="Series disponibles">
         <div class="series-tag" role="listitem">Dragon Ball</div>
         <div class="series-tag" role="listitem">One Piece</div>
         <div class="series-tag" role="listitem">Naruto</div>
@@ -256,9 +327,9 @@
       </div>
 
       <!-- Galería de cartas coleccionables -->
-      <div class="img-card-gallery" role="list" aria-label="Cartas coleccionables">
+      <div class="img-card-gallery reveal reveal-stagger" role="list" aria-label="Cartas coleccionables">
 
-        <article class="img-card ic-legendary" role="listitem">
+        <article class="img-card ic-legendary" role="listitem" id="card-goku">
           <div class="img-card-top">
             <span class="ic-badge legendary-badge">★ Legendario</span>
             <img src="img/goku.png" alt="Son Goku SSB de Dragon Ball Super"
@@ -269,7 +340,7 @@
           </div>
         </article>
 
-        <article class="img-card ic-mythic" role="listitem">
+        <article class="img-card ic-mythic" role="listitem" id="card-sailor">
           <div class="img-card-top">
             <span class="ic-badge mythic-badge">⬡ Mítico</span>
             <img src="img/sailor moon.png" alt="Sailor Moon de Bishoujo Senshi"
@@ -281,7 +352,7 @@
           </div>
         </article>
 
-        <article class="img-card ic-epic" role="listitem">
+        <article class="img-card ic-epic" role="listitem" id="card-tanjiro">
           <div class="img-card-top">
             <span class="ic-badge epic-badge">◆ Épico</span>
             <img src="img/tanjiro.png" alt="Tanjiro Kamado de Demon Slayer"
@@ -293,7 +364,7 @@
           </div>
         </article>
 
-        <article class="img-card ic-rare" role="listitem">
+        <article class="img-card ic-rare" role="listitem" id="card-naruto">
           <div class="img-card-top">
             <span class="ic-badge rare-badge">● Raro</span>
             <img src="img/naruto.png" alt="Naruto Uzumaki de Naruto Shippuden"
@@ -305,7 +376,7 @@
           </div>
         </article>
 
-        <article class="img-card ic-legendary secret-card" role="listitem">
+        <article class="img-card ic-legendary secret-card" role="listitem" id="card-secret">
           <div class="img-card-top">
             <span class="ic-badge legendary-badge">??? Secreto</span>
             <div class="secret-overlay">
@@ -324,12 +395,141 @@
     </div>
   </section>
 
+  <!-- ░░ GESTIÓN DE COLECCIÓN ░░ -->
+  <section class="gestion-section" id="gestion" aria-label="Gestión de personajes">
+    <div class="container">
+      <div class="section-label reveal">Gestión interactiva</div>
+      <h2 class="section-title reveal">Administra tu<br/>colección.</h2>
+      <p class="section-sub reveal">Agrega nuevos personajes, filtra por rareza y organiza tu álbum personal.</p>
+
+      <div class="gestion-layout reveal">
+
+        <!-- Formulario de registro -->
+        <div class="gestion-form-wrap">
+          <form id="form-personaje" class="gestion-form" novalidate aria-label="Formulario para agregar personaje">
+            <h3 class="form-title">✦ Nuevo personaje</h3>
+
+            <!-- Campo: Nombre -->
+            <div class="form-group">
+              <label for="input-nombre" class="form-label">Nombre del personaje</label>
+              <input type="text" id="input-nombre" class="form-input" placeholder="Ej: Son Goku SSB"
+                     required minlength="2" maxlength="50" autocomplete="off" />
+              <span id="error-nombre" class="form-error" role="alert"></span>
+            </div>
+
+            <!-- Campo: Serie -->
+            <div class="form-group">
+              <label for="input-serie" class="form-label">Serie / Anime</label>
+              <input type="text" id="input-serie" class="form-input" placeholder="Ej: Dragon Ball Super"
+                     required minlength="2" maxlength="80" autocomplete="off" />
+              <span id="error-serie" class="form-error" role="alert"></span>
+            </div>
+
+            <!-- Campo: Email -->
+            <div class="form-group">
+              <label for="input-email" class="form-label">Email del coleccionista</label>
+              <input type="email" id="input-email" class="form-input" placeholder="Ej: fan@anime.com"
+                     required autocomplete="email" />
+              <span id="error-email" class="form-error" role="alert"></span>
+            </div>
+
+            <!-- Campo: Rareza (auto-asignación o manual) -->
+            <div class="form-group">
+              <label class="form-label">Rareza</label>
+              <div class="rareza-mode-toggle">
+                <button type="button" class="rareza-mode-btn active" id="rareza-mode-auto" data-mode="auto">
+                  🎲 Auto (Gacha)
+                </button>
+                <button type="button" class="rareza-mode-btn" id="rareza-mode-manual" data-mode="manual">
+                  ✏️ Manual
+                </button>
+              </div>
+              <!-- Auto: muestra texto explicativo -->
+              <div class="rareza-auto-info" id="rareza-auto-info">
+                <span class="rareza-auto-icon">🎰</span>
+                <span>La rareza se asignará automáticamente con probabilidades gacha al agregar el personaje.</span>
+              </div>
+              <!-- Manual: select visible solo en modo manual -->
+              <select id="input-rareza" class="form-input form-select" style="display:none">
+                <option value="" disabled selected>Selecciona una rareza...</option>
+                <option value="common">◯ Común (45%)</option>
+                <option value="uncommon">◐ Infrecuente (28%)</option>
+                <option value="rare">● Raro (15%)</option>
+                <option value="epic">◆ Épico (8%)</option>
+                <option value="legendary">★ Legendario (3.5%)</option>
+                <option value="mythic">⬡ Mítico (0.5%)</option>
+              </select>
+              <span id="error-rareza" class="form-error" role="alert"></span>
+            </div>
+
+            <!-- Campo: Imagen de la carta -->
+            <div class="form-group">
+              <label for="input-imagen" class="form-label">Imagen de la carta</label>
+              <div class="image-upload-area" id="image-upload-area">
+                <input type="file" id="input-imagen" class="image-upload-input" accept="image/*" />
+                <div class="image-upload-placeholder" id="image-upload-placeholder">
+                  <span class="image-upload-icon">🖼️</span>
+                  <span class="image-upload-text">Arrastra una imagen o haz clic para seleccionar</span>
+                  <span class="image-upload-hint">PNG, JPG, WebP — máx. 2MB · Solo personajes animados</span>
+                </div>
+                <div class="image-upload-preview" id="image-upload-preview" style="display:none">
+                  <img id="image-preview-img" alt="Preview de la carta" />
+                  <button type="button" class="image-preview-remove" id="image-preview-remove" aria-label="Quitar imagen">✕</button>
+                </div>
+              </div>
+              <!-- Indicador de análisis de imagen -->
+              <div class="image-analysis" id="image-analysis" style="display:none">
+                <span class="image-analysis-icon" id="image-analysis-icon">⏳</span>
+                <span class="image-analysis-text" id="image-analysis-text">Analizando imagen...</span>
+              </div>
+              <span id="error-imagen" class="form-error" role="alert"></span>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="btn-agregar" id="btn-agregar">
+              <span class="btn-agregar-icon">＋</span>
+              <span>Agregar a la colección</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Panel derecho: Filtros + Grid -->
+        <div class="gestion-panel">
+
+          <!-- Contador -->
+          <div class="personaje-counter" aria-live="polite">
+            <div class="counter-main">
+              <span class="counter-label">Personajes en colección:</span>
+              <span class="counter-total" id="contador-total">0</span>
+            </div>
+            <div class="counter-detalle" id="contador-detalle"></div>
+          </div>
+
+          <!-- Filtros por rareza -->
+          <div class="rarity-filters" role="tablist" aria-label="Filtrar por rareza">
+            <button class="rarity-pill active" data-rareza="all" role="tab" aria-selected="true">Todos</button>
+            <button class="rarity-pill" data-rareza="common" role="tab" style="--pill-color:#a0aec0">◯ Común</button>
+            <button class="rarity-pill" data-rareza="uncommon" role="tab" style="--pill-color:#68d391">◐ Infrecuente</button>
+            <button class="rarity-pill" data-rareza="rare" role="tab" style="--pill-color:#63b3ed">● Raro</button>
+            <button class="rarity-pill" data-rareza="epic" role="tab" style="--pill-color:#b794f4">◆ Épico</button>
+            <button class="rarity-pill" data-rareza="legendary" role="tab" style="--pill-color:#f6ad55">★ Legendario</button>
+            <button class="rarity-pill" data-rareza="mythic" role="tab" style="--pill-color:#00e5c8">⬡ Mítico</button>
+          </div>
+
+          <!-- Grid dinámico de personajes -->
+          <div class="personajes-grid" id="personajes-grid" role="list" aria-label="Lista de personajes"></div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ░░ RAREZAS ░░ -->
   <section class="rarities" id="rareza" aria-label="Sistema de rareza de cartas">
     <div class="container">
-      <div class="section-label">Sistema de rareza</div>
-      <h2 class="section-title">Cada carta, una historia.</h2>
-      <div class="rarity-table" role="list" aria-label="Tabla de rarezas">
+      <div class="section-label reveal">Sistema de rareza</div>
+      <h2 class="section-title reveal">Cada carta, una historia.</h2>
+      <div class="rarity-table reveal" role="list" aria-label="Tabla de rarezas">
         <div class="rarity-row" role="listitem"><div class="rarity-icon" style="color:#a0aec0" aria-hidden="true">◯</div><div class="rarity-name">Común</div><div class="rarity-chance">45%</div><div class="rarity-bar"><div class="rarity-fill" style="width:45%;background:#a0aec0"></div></div><div class="rarity-desc">Personajes populares de todas las series</div></div>
         <div class="rarity-row" role="listitem"><div class="rarity-icon" style="color:#68d391" aria-hidden="true">◐</div><div class="rarity-name">Infrecuente</div><div class="rarity-chance">28%</div><div class="rarity-bar"><div class="rarity-fill" style="width:28%;background:#68d391"></div></div><div class="rarity-desc">Arte especial y efectos suaves</div></div>
         <div class="rarity-row" role="listitem"><div class="rarity-icon" style="color:#63b3ed" aria-hidden="true">●</div><div class="rarity-name">Raro</div><div class="rarity-chance">15%</div><div class="rarity-bar"><div class="rarity-fill" style="width:15%;background:#63b3ed"></div></div><div class="rarity-desc">Arte holográfico con brillo dinámico</div></div>
@@ -340,12 +540,78 @@
     </div>
   </section>
 
+  <!-- ░░ SIMULADOR DE APERTURA ░░ -->
+  <section class="gacha-section" id="simulador" aria-label="Simulador de apertura de carta">
+    <div class="container">
+      <div class="section-label reveal">Simulador en vivo</div>
+      <h2 class="section-title reveal">Prueba tu suerte<br/>ahora mismo.</h2>
+      <p class="section-sub reveal">Haz clic en el botón para invocar una carta al azar. ¿Te saldrá un Mítico?</p>
+
+      <div class="gacha-stage reveal">
+
+        <!-- Pull area -->
+        <div class="gacha-pull-area">
+
+          <!-- The big card -->
+          <div class="gacha-card" id="gacha-card">
+            <div class="gacha-card-inner" id="gacha-card-inner">
+              <!-- Back (pre-reveal) -->
+              <div class="gacha-card-back">
+                <div class="gacha-back-pattern"></div>
+                <div class="gacha-back-glow" id="gacha-back-glow"></div>
+                <div class="gacha-back-content">
+                  <div class="gacha-back-logo">Ani<span>Pack</span></div>
+                  <div class="gacha-back-stars">✦ ✦ ✦</div>
+                  <p class="gacha-back-hint" id="gacha-hint">Toca invocar ↓</p>
+                </div>
+              </div>
+              <!-- Front (character reveal) -->
+              <div class="gacha-card-front" id="gacha-card-front">
+                <div class="gacha-front-shine" id="gacha-front-shine"></div>
+                <div class="gacha-front-badge" id="gacha-badge"></div>
+                <img id="gacha-img" src="img/goku.png" alt="Personaje revelado" class="gacha-front-img" />
+                <div class="gacha-front-info" id="gacha-info">
+                  <strong id="gacha-name">???</strong>
+                  <span id="gacha-series">???</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Particles container for this card -->
+          <div class="gacha-particles" id="gacha-particles"></div>
+
+          <!-- Invoke button -->
+          <button id="gacha-btn" class="gacha-invoke-btn">
+            <span class="gacha-btn-icon">🎴</span>
+            <span>Invocar carta</span>
+          </button>
+
+          <!-- Pull counter -->
+          <div class="gacha-counter" id="gacha-counter">
+            <span class="gacha-counter-label">Invocaciones:</span>
+            <span class="gacha-counter-num" id="gacha-count">0</span>
+          </div>
+        </div>
+
+        <!-- Pull history sidebar -->
+        <aside class="gacha-history" id="gacha-history">
+          <h3>Últimas invocaciones</h3>
+          <div class="gacha-history-list" id="gacha-history-list">
+            <p class="gacha-history-empty">Aún no hay invocaciones. ¡Prueba tu suerte!</p>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+
   <!-- ░░ TESTIMONIOS ░░ -->
   <section class="testimonials" aria-label="Testimonios de la comunidad">
     <div class="container">
-      <div class="section-label">Comunidad</div>
-      <h2 class="section-title">Ya hay 80K adictos.</h2>
-      <div class="testi-grid">
+      <div class="section-label reveal">Comunidad</div>
+      <h2 class="section-title reveal">Ya hay 80K adictos.</h2>
+      <div class="testi-grid reveal reveal-stagger">
         <article class="testi-card">
           <p>"Llevo 3 semanas abriendo sobres cada día. Ya tengo 2 legendarios de Sailor Moon y sigo sin poder parar."</p>
           <div class="testi-author"><div class="testi-avatar" aria-hidden="true">🌙</div><div><strong>usagi_fan_99</strong><span>Coleccionista nivel 34</span></div></div>
@@ -366,15 +632,15 @@
   <section class="cta-section" id="cta" aria-label="Registro gratuito">
     <div class="cta-bg-pattern" aria-hidden="true"></div>
     <div class="container cta-inner">
-      <div class="cta-tag">🎁 Gratis para siempre</div>
-      <h2 class="cta-title">Tu primer sobre<br/>te está esperando.</h2>
-      <p class="cta-sub">Sin tarjeta de crédito. Solo crea tu cuenta y empieza a abrir sobres ahora mismo.</p>
-      <form class="cta-form" onsubmit="return false" aria-label="Formulario de registro">
+      <div class="cta-tag reveal">🎁 Gratis para siempre</div>
+      <h2 class="cta-title reveal">Tu primer sobre<br/>te está esperando.</h2>
+      <p class="cta-sub reveal">Sin tarjeta de crédito. Solo crea tu cuenta y empieza a abrir sobres ahora mismo.</p>
+      <form class="cta-form reveal" onsubmit="return false" aria-label="Formulario de registro">
         <input type="email" placeholder="tucorreo@ejemplo.com" class="cta-input"
                aria-label="Correo electrónico" autocomplete="email" />
         <button type="submit" class="btn-cta">Abrir sobre gratis →</button>
       </form>
-      <p class="cta-fine">Al registrarte recibes 3 sobres de bienvenida. Sin compromiso.</p>
+      <p class="cta-fine reveal">Al registrarte recibes 3 sobres de bienvenida. Sin compromiso.</p>
     </div>
   </section>
 
@@ -389,5 +655,17 @@
     </div>
   </footer>
 
+  <!-- ░░ SECRET CARD MODAL ░░ -->
+  <div id="secret-modal" class="secret-modal" aria-label="Carta secreta revelada">
+    <div class="modal-body">
+      <h3>★ ¡Legendario!</h3>
+      <img src="img/goku.png" alt="Personaje secreto revelado" class="modal-card-img" />
+      <p>¡Has descubierto al <strong>personaje secreto</strong>! Son Goku Super Saiyan Blue se une a tu colección.</p>
+      <button id="secret-close" class="modal-close">Cerrar</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
