@@ -51,6 +51,68 @@ const AniPackApp = (() => {
 
   let personajes = [];
   let nextId = 8;
+
+  /* ─────────────────────────────────────────────
+     LOCALSTORAGE — PERSISTENCIA DE DATOS
+     ───────────────────────────────────────────── */
+
+  /** Claves de almacenamiento local */
+  const LS_KEY_PERSONAJES = 'anipack_personajes';
+  const LS_KEY_NEXTID     = 'anipack_nextid';
+
+  /**
+   * Guarda el arreglo de personajes en localStorage.
+   * Serializa a JSON. Las imágenes en base64 también se persisten.
+   * Asistido por IA: estructura de persistencia sugerida por Claude.
+   */
+  function guardarEnStorage() {
+    try {
+      localStorage.setItem(LS_KEY_PERSONAJES, JSON.stringify(personajes));
+      localStorage.setItem(LS_KEY_NEXTID, String(nextId));
+    } catch (e) {
+      // localStorage puede estar deshabilitado (modo privado) o lleno
+      console.warn('AniPack: No se pudo guardar en localStorage:', e.message);
+    }
+  }
+
+  /**
+   * Carga personajes desde localStorage.
+   * Si no hay datos guardados, usa DATOS_INICIALES.
+   * @returns {{ personajes: Array, nextId: number }}
+   */
+  function cargarDesdeStorage() {
+    try {
+      const raw = localStorage.getItem(LS_KEY_PERSONAJES);
+      const rawId = localStorage.getItem(LS_KEY_NEXTID);
+      if (raw) {
+        const datos = JSON.parse(raw);
+        // Validar que sea un arreglo de objetos válidos
+        if (Array.isArray(datos) && datos.every(p => p.id && p.nombre)) {
+          return {
+            personajes: datos,
+            nextId: rawId ? parseInt(rawId, 10) : datos.length + 1
+          };
+        }
+      }
+    } catch (e) {
+      console.warn('AniPack: No se pudo leer localStorage:', e.message);
+    }
+    // Fallback: datos iniciales
+    return { personajes: null, nextId: 8 };
+  }
+
+  /**
+   * Limpia todos los datos guardados en localStorage.
+   * Se expone en la API pública para permitir reset desde consola.
+   */
+  function limpiarStorage() {
+    try {
+      localStorage.removeItem(LS_KEY_PERSONAJES);
+      localStorage.removeItem(LS_KEY_NEXTID);
+    } catch (e) {
+      console.warn('AniPack: No se pudo limpiar localStorage:', e.message);
+    }
+  }
   let filtroActual = 'all';
   let imagenSeleccionada = '';  // Base64 data URL de la imagen subida
   let rarezaModo = 'auto';     // 'auto' = gacha probability, 'manual' = select
@@ -409,6 +471,7 @@ const AniPackApp = (() => {
     };
 
     personajes.push(nuevoPersonaje);
+    guardarEnStorage(); // Persistir en localStorage
     renderizarLista();
     actualizarContador();
     limpiarFormulario();
@@ -437,11 +500,13 @@ const AniPackApp = (() => {
       card.classList.add('personaje-card-exit');
       card.addEventListener('animationend', () => {
         personajes.splice(index, 1);
+        guardarEnStorage(); // Persistir cambio en localStorage
         renderizarLista();
         actualizarContador();
       }, { once: true });
     } else {
       personajes.splice(index, 1);
+      guardarEnStorage(); // Persistir cambio en localStorage
       renderizarLista();
       actualizarContador();
     }
@@ -976,8 +1041,18 @@ const AniPackApp = (() => {
    * Carga datos iniciales, configura eventos y renderiza.
    */
   function init() {
-    // Cargar datos iniciales
-    personajes = DATOS_INICIALES.map(p => ({ ...p, fechaCreacion: Date.now() }));
+    // Cargar desde localStorage o usar datos iniciales
+    const almacenado = cargarDesdeStorage();
+    if (almacenado.personajes) {
+      // Hay datos guardados — restaurar sesión anterior
+      personajes = almacenado.personajes;
+      nextId = almacenado.nextId;
+      mostrarNotificacion(`Colección restaurada: ${personajes.length} personajes`, 'rare');
+    } else {
+      // Primera vez — cargar datos iniciales y guardarlos
+      personajes = DATOS_INICIALES.map(p => ({ ...p, fechaCreacion: Date.now() }));
+      guardarEnStorage();
+    }
 
     // Bind del formulario
     const form = document.getElementById('form-personaje');
@@ -1030,6 +1105,7 @@ const AniPackApp = (() => {
     sanitizar,
     obtenerPersonajes,
     filtrarPorRareza,
+    limpiarStorage,
     RAREZAS
   };
 
