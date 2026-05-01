@@ -1,5 +1,5 @@
 /* ============================================================
-   AniPack — script.js  (interactividad completa)
+   AniPack — script.js v1.1 (interactividad completa)
    ============================================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
